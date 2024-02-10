@@ -1,0 +1,17 @@
+name: Scala CI
+on:
+  push:
+    branches:
+      - main
+      - 'solution-*'
+  pull_request:
+    branches:
+      - main
+      - 'solution-*'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: sbt hw
