@@ -49,10 +49,11 @@ lazy val commonSettings = Seq(
   publish / skip := true
 )
 
-lazy val `s2-01-scala3-overview` = (projectMatrix in file("modules/s2-01-scala3-overview"))
+val s201name = "s2-01-scala3-overview"
+lazy val `s2-01-scala3-overview` = (projectMatrix in file(s"modules/$s201name"))
   .settings(commonSettings)
   .settings(
-    name := "s2-01-scala3-overview",
+    name := s201name,
     libraryDependencies ++= Seq(
       circe.core,
       munit % Test
@@ -72,16 +73,26 @@ lazy val `root` = (project in file("."))
   )
   .aggregate(allModules.flatMap(_.projectRefs): _*)
 
+lazy val moduleKeys: Map[String, String] =
+  Map(
+    "s2-01" -> (s201name + "3") // 3 is for scala3 module in sbt matrix, only for cross-build modules
+  )
+
 commands += Command.command("hw") { state =>
   val branch = Process("git rev-parse --abbrev-ref HEAD").lineStream.head
 
   val pattern = """solution-(s\d-\d\d).*""".r
   branch match {
-    case pattern("s2-01") =>
-      runCommand("s2-01-scala3-overview3 / test", state)
     case pattern(x) =>
-      sLog.value.warn(s"WARN: Current branch starts with 'solution-' prefix, but $x doesn't correspond to any module")
-      runCommand("test", state)
+      val moduleOpt = moduleKeys.get(x)
+      moduleOpt match {
+        case Some(m) =>
+          runCommand(s"$m / test", state)
+        case None =>
+          sLog.value.warn(s"WARN: Current branch starts with 'solution-' prefix, but $x doesn't correspond to any module")
+          runCommand("test", state)
+      }
+
     case _ =>
       runCommand("test", state)
   }
