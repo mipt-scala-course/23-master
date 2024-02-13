@@ -5,8 +5,8 @@ import io.circe.{Encoder, Json}
 /** I. Мигрируем forSome
   *
   * Для работы c сериализацией данных в проекте X используются экзистенциальные типы данных, выраженные через
-  * конструкцию forSome, которая не поддерживается в scala 3. Помогите сделать кросс-билд проекта X на scala 3, добавив
-  * реализацию ProjectX, не использующую forSome.
+  * конструкцию forSome, которая не поддерживается в scala 3 (https://dotty.epfl.ch/docs/reference/dropped-features/existential-types.html).
+  * Помогите сделать кросс-билд проекта X на scala 3, добавив реализацию ProjectX, не использующую forSome.
   *
   * `SmthCanBeEncoded` - тип-обертка, содержащий значение некоторого типа и его сериализатор (возможно, кастомный) в
   * Json. `Input` - список `SmthCanBeEncoded` для каких-то типов `encode` - метод, сериализующий `Input` в Json-список,

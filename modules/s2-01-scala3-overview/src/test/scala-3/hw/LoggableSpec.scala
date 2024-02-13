@@ -9,26 +9,6 @@ class LoggableSpec extends munit.FunSuite:
     def toName: Name   = Name(x).getOrElse(throw new Exception(s"expected name `$x` is ok"))
     def toLogin: Login = Login(x).getOrElse(throw new Exception(s"expected login `$x` is ok"))
 
-  test("I.1 Login new type"):
-    val loginStartsWithNumber = Login("1foo")
-    assertEquals(loginStartsWithNumber.isLeft, true, loginStartsWithNumber)
-
-    val loginStartsWithUnderscore = Login("_foo")
-    assertEquals(loginStartsWithUnderscore.isLeft, true, loginStartsWithUnderscore)
-
-    val login = Login("cheburek")
-    assertEquals(login: Either[String, String], Right("cheburek"), login)
-
-  test("I.2 Name new type"):
-    val nameStartsWithSpace = Name(" Vasiliy")
-    assertEquals(nameStartsWithSpace.isLeft, true, nameStartsWithSpace)
-
-    val nameEmpty = Name("")
-    assertEquals(nameEmpty.isLeft, true, nameEmpty)
-
-    val name = Name("Vasiliy")
-    assertEquals(name: Either[String, String], Right("Vasiliy"), name)
-
   test("II. 1 Loggable contramap and string instance"):
     val testString = "lol kek"
     val jsonTest   = summon[Loggable[String]].jsonLog(testString)
@@ -39,11 +19,31 @@ class LoggableSpec extends munit.FunSuite:
     val json                              = dateLoggable.jsonLog(testDate)
     assertEquals(json.toString, "\"2023-04-02\"", testDate)
 
+  test("II. 2 Login new type"):
+    val loginStartsWithNumber = Login("1foo")
+    assertEquals(loginStartsWithNumber.isLeft, true, loginStartsWithNumber)
+
+    val loginStartsWithUnderscore = Login("_foo")
+    assertEquals(loginStartsWithUnderscore.isLeft, true, loginStartsWithUnderscore)
+
+    val login = Login("cheburek")
+    assertEquals(login: Either[String, String], Right("cheburek"), login)
+
+  test("II. 2 Name new type"):
+    val nameStartsWithSpace = Name(" Vasiliy")
+    assertEquals(nameStartsWithSpace.isLeft, true, nameStartsWithSpace)
+
+    val nameEmpty = Name("")
+    assertEquals(nameEmpty.isLeft, true, nameEmpty)
+
+    val name = Name("Vasiliy")
+    assertEquals(name: Either[String, String], Right("Vasiliy"), name)
+
   def testJson[A: Loggable](a: A, expected: String): Unit =
     val json = summon[Loggable[A]].jsonLog(a)
     assertEquals(json.toString, expected, json)
 
-  test("III. 2 Loggable for Name"):
+  test("II. 2 Loggable for Name"):
     testJson("Vasiliy".toName, s"\"Vasil**\"")
     testJson("Siniy".toName, s"\"Siniy\"")
     testJson("Abrakadabra".toName, s"\"Abrak******\"")
@@ -106,7 +106,7 @@ class LoggableSpec extends munit.FunSuite:
       "\"message\":\"awesome user just signed in\",\"context\":{\"login\":\"awes_ome_1\",\"name\":\"Aweso**\",\"token\":{\"token\":\"***\",\"exp\":1693929522}}}"
     )
 
-  test("III. 1 sensitive type class"):
+  test("II. 6 sensitive type class"):
     val code =
       "case class ThereIsNoSensitiveInfo(int: Int, str: String)\nsummon[Sensitive[ThereIsNoSensitiveInfo]]"
     assertNoDiff(
@@ -117,7 +117,7 @@ class LoggableSpec extends munit.FunSuite:
          |""".stripMargin
     )
 
-  test("III. 2 non-sensitive loggable instances"):
+  test("II. 7 non-sensitive loggable instances"):
     import Loggable.given
 
     case class ThereIsNoSensitiveInfo(int: Int, str: String) derives Encoder.AsObject

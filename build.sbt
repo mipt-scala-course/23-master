@@ -73,27 +73,24 @@ lazy val `root` = (project in file("."))
   )
   .aggregate(allModules.flatMap(_.projectRefs): _*)
 
+// map task -> module to compile
 lazy val moduleKeys: Map[String, String] =
   Map(
     "s2-01" -> (s201name + "3") // 3 is for scala3 module in sbt matrix, only for cross-build modules
   )
 
 commands += Command.command("hw") { state =>
-  val branch = Process("git rev-parse --abbrev-ref HEAD").lineStream.head
+  val branch = Process("git rev-parse --abbrev-ref HEAD").lineStream.headOption
 
   val pattern = """solution-(s\d-\d\d).*""".r
-  branch match {
+  branch.flatMap {
     case pattern(x) =>
-      val moduleOpt = moduleKeys.get(x)
-      moduleOpt match {
-        case Some(m) =>
-          runCommand(s"$m / test", state)
-        case None =>
-          sLog.value.warn(s"WARN: Current branch starts with 'solution-' prefix, but $x doesn't correspond to any module")
-          runCommand("test", state)
-      }
-
-    case _ =>
-      runCommand("test", state)
-  }
+      val key = moduleKeys.get(x)
+      if (key.isEmpty)
+        sLog.value.warn(s"WARN: Current branch starts with 'solution-' prefix, but $x doesn't correspond to any module")
+      key
+    case _ => None
+  }.fold(
+    runCommand("test", state)
+  )(m => runCommand(s"$m / test", state))
 }
