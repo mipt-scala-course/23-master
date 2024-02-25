@@ -2,16 +2,20 @@ import org.typelevel.scalacoptions.{ScalaVersion, ScalacOption, ScalacOptions}
 import deps.*
 import sbt.internal.*
 import StateSyntax.*
+import sbt.Project.projectToRef
+
 import scala.Ordering.Implicits.*
 import sbtprojectmatrix.ProjectMatrixKeys
+
 import scala.sys.process.Process
 
-ThisBuild / organization     := "ru.tinkoff.sme"
+ThisBuild / organization     := "ru.tinkoff"
 ThisBuild / organizationName := "Tinkoff"
-ThisBuild / versionScheme    := Some("early-semver")
+ThisBuild / scalaVersion     := scalac.v3
 
 lazy val scala2Versions     = List(scalac.v2_13)
-lazy val scala2And3Versions = scalac.v3 :: scala2Versions
+lazy val scala3Versions     = List(scalac.v3)
+lazy val scala2And3Versions = scala3Versions ++ scala2Versions
 
 lazy val commonSettings = Seq(
   tpolecatExcludeOptions ++= Set(ScalacOptions.privateKindProjector),
@@ -61,23 +65,39 @@ lazy val `s2-01-scala3-overview` = (projectMatrix in file(s"modules/$s201name"))
   )
   .jvmPlatform(scala2And3Versions)
 
+val s202name = "s2-02-metaprogramming-1"
+lazy val `s2-02-metaprogramming-1` = (project in file(s"modules/$s202name"))
+  .settings(commonSettings)
+  .settings(
+    name := s202name,
+    libraryDependencies ++= Seq(
+      circe.core,
+      munit % Test
+    )
+  )
+
 lazy val allModules =
   Seq(
-    `s2-01-scala3-overview`
-  )
+    `s2-01-scala3-overview`, // cross build projects
+  ).flatMap(_.projectRefs) ++ Seq(
+    `s2-02-metaprogramming-1` // scala 3 only projects
+  ).map(projectToRef)
 
 lazy val `root` = (project in file("."))
   .settings(
     name := "root",
     publish / skip := true
   )
-  .aggregate(allModules.flatMap(_.projectRefs): _*)
+  .aggregate(allModules: _*)
 
 // map task -> module to compile
-lazy val moduleKeys: Map[String, String] =
-  Map(
+lazy val moduleKeys: Map[String, String] = {
+  List(
+    s202name,
+  ).map(x => x.take(5) -> x).toMap + (
     "s2-01" -> (s201name + "3") // 3 is for scala3 module in sbt matrix, only for cross-build modules
   )
+}
 
 commands += Command.command("hw") { state =>
   val branch = Process("git rev-parse --abbrev-ref HEAD").lineStream.headOption
