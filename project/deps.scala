@@ -13,5 +13,5 @@ object deps {
 
 object scalac {
   val v2_13 = "2.13.12"
-  val v3    = "3.3.1"
+  val v3    = "3.3.2"
 }
