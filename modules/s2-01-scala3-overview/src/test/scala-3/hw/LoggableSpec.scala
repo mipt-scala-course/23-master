@@ -97,12 +97,12 @@ class LoggableSpec extends munit.FunSuite:
 
   test("II. 5 log method"):
     val name = "Awesome".toName
-    testOut(name.log("awesome name"), "\"message\":\"awesome name\",\"context\":\"Aweso**\"}")
+    testOut(name.jsonLog("awesome name"), "\"message\":\"awesome name\",\"context\":\"Aweso**\"}")
 
     val login = "awes_ome_1".toLogin
     val user  = User(login, name, sampleJwt)
     testOut(
-      user.log("awesome user just signed in"),
+      user.jsonLog("awesome user just signed in"),
       "\"message\":\"awesome user just signed in\",\"context\":{\"login\":\"awes_ome_1\",\"name\":\"Aweso**\",\"token\":{\"token\":\"***\",\"exp\":1693929522}}}"
     )
 
@@ -122,4 +122,4 @@ class LoggableSpec extends munit.FunSuite:
 
     case class ThereIsNoSensitiveInfo(int: Int, str: String) derives Encoder.AsObject
     val data = ThereIsNoSensitiveInfo(42, "lol")
-    testOut(data.log("data"), "\"message\":\"data\",\"context\":{\"int\":42,\"str\":\"lol\"}}")
+    testOut(data.jsonLog("data"), "\"message\":\"data\",\"context\":{\"int\":42,\"str\":\"lol\"}}")
