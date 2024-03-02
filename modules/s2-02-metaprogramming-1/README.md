@@ -2,9 +2,9 @@
 
 Деривация инстанстов Loggable.
 
-I. Для типов-произведений (рекордов) (формулировка: [src/main/scala/hw/Task.scala](src/main/scala-2/hw/ProjectX.scala))
+I. Для типов-произведений (рекордов) (формулировка: [src/main/scala/hw/Task.scala](src/main/scala/hw/Task.scala))
 
-II. (*) Для типов-сумм (формулировка: [src/main/scala/hw/Task.scala](src/main/scala-3/hw/Loggable.scala))
+II. (*) Для типов-сумм (формулировка: [src/main/scala/hw/Task.scala](src/main/scala/hw/Task.scala))
   Это задание опциональное, чтобы проеврить решение раскомментируйте соответствующие тесты.
 
 Чтобы прогнать тесты в этом модуле запустите `s2-02-metaprogramming-1 / test`.
