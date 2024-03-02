@@ -76,11 +76,24 @@ lazy val `s2-02-metaprogramming-1` = (project in file(s"modules/$s202name"))
     )
   )
 
+val s203name = "s2-03-metaprogramming-2"
+lazy val `s2-03-metaprogramming-2` = (project in file(s"modules/$s203name"))
+  .settings(commonSettings)
+  .settings(
+    name := s203name,
+    libraryDependencies ++= Seq(
+      circe.core,
+      circe.parse,
+      munit % Test
+    )
+  )
+
 lazy val allModules =
   Seq(
     `s2-01-scala3-overview`, // cross build projects
   ).flatMap(_.projectRefs) ++ Seq(
-    `s2-02-metaprogramming-1` // scala 3 only projects
+    `s2-02-metaprogramming-1`, // scala 3 only projects
+    `s2-03-metaprogramming-2`
   ).map(projectToRef)
 
 lazy val `root` = (project in file("."))
@@ -94,6 +107,7 @@ lazy val `root` = (project in file("."))
 lazy val moduleKeys: Map[String, String] = {
   List(
     s202name,
+    s203name,
   ).map(x => x.take(5) -> x).toMap + (
     "s2-01" -> (s201name + "3") // 3 is for scala3 module in sbt matrix, only for cross-build modules
   )
