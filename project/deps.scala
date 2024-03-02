@@ -7,7 +7,9 @@ object deps {
   val munit = "org.scalameta" %% "munit" % "0.7.29"
 
   object circe {
-    val core = "io.circe" %% "circe-core" % "0.14.6"
+    val version = "0.14.6"
+    val core = "io.circe" %% "circe-core" % version
+    val parse = "io.circe" %% "circe-parser" % version
   }
 }
 

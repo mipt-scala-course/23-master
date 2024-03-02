@@ -34,3 +34,11 @@ project/plugins/project/
 .DS_Store
 local.conf
 local-dir/
+
+### VS Code
+.vscode/
+
+### Metals
+.bloop/
+.metals/
+metals.sbt
