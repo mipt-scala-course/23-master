@@ -107,6 +107,7 @@ lazy val `root` = (project in file("."))
 lazy val moduleKeys: Map[String, String] = {
   List(
     s202name,
+    s203name,
   ).map(x => x.take(5) -> x).toMap + (
     "s2-01" -> (s201name + "3") // 3 is for scala3 module in sbt matrix, only for cross-build modules
   )
