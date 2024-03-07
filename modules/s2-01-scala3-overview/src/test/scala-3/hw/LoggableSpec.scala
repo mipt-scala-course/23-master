@@ -6,17 +6,17 @@ import io.circe.Encoder
 
 class LoggableSpec extends munit.FunSuite:
   extension (x: String)
-    def toName: Name   = Name(x).getOrElse(throw new Exception(s"expected name `$x` is ok"))
+    def toName: Name = Name(x).getOrElse(throw new Exception(s"expected name `$x` is ok"))
     def toLogin: Login = Login(x).getOrElse(throw new Exception(s"expected login `$x` is ok"))
 
   test("II. 1 Loggable contramap and string instance"):
     val testString = "lol kek"
-    val jsonTest   = summon[Loggable[String]].jsonLog(testString)
+    val jsonTest = summon[Loggable[String]].jsonLog(testString)
     assertEquals(jsonTest.toString, "\"lol kek\"", jsonTest)
 
     val dateLoggable: Loggable[LocalDate] = summon[Loggable[String]].contramap(_.toString)
-    val testDate                          = LocalDate.parse("2023-04-02")
-    val json                              = dateLoggable.jsonLog(testDate)
+    val testDate = LocalDate.parse("2023-04-02")
+    val json = dateLoggable.jsonLog(testDate)
     assertEquals(json.toString, "\"2023-04-02\"", testDate)
 
   test("II. 2 Login new type"):
@@ -63,11 +63,11 @@ class LoggableSpec extends munit.FunSuite:
   def loggedTokenFmtd(prefix: String): String =
     List.from(loggedSampleJwt.lines().iterator().asScala) match
       case h :: t => (h :: t.map(prefix + _)).mkString("\n")
-      case Nil    => ""
+      case Nil => ""
 
   test("II. 4 Loggable for User"):
     val login = "awes_ome_1".toLogin
-    val name  = "Awesome".toName
+    val name = "Awesome".toName
     val expected =
       s"""|{
           |  "login" : "$login",
@@ -77,7 +77,7 @@ class LoggableSpec extends munit.FunSuite:
     testJson(User(login, name, sampleJwt), expected)
 
     val login2 = "super_mega_chill".toLogin
-    val name2  = "Chillovek Molekula".toName
+    val name2 = "Chillovek Molekula".toName
     val expected2 =
       s"""|{
           |  "login" : "$login2",
@@ -97,14 +97,15 @@ class LoggableSpec extends munit.FunSuite:
 
   test("II. 5 log method"):
     val name = "Awesome".toName
-    testOut(name.log("awesome name"), "\"message\":\"awesome name\",\"context\":\"Aweso**\"}")
+    val res1 = name.log("awesome name").noSpaces
+    val endsWith1 = "\"message\":\"awesome name\",\"context\":\"Aweso**\"}"
+    assertEquals(res1.stripTrailing.endsWith(endsWith1), true, res1)
 
     val login = "awes_ome_1".toLogin
-    val user  = User(login, name, sampleJwt)
-    testOut(
-      user.log("awesome user just signed in"),
-      "\"message\":\"awesome user just signed in\",\"context\":{\"login\":\"awes_ome_1\",\"name\":\"Aweso**\",\"token\":{\"token\":\"***\",\"exp\":1693929522}}}"
-    )
+    val user = User(login, name, sampleJwt)
+    val res2 = user.log("awesome user just signed in").noSpaces
+    val endsWith2 = "\"message\":\"awesome user just signed in\",\"context\":{\"login\":\"awes_ome_1\",\"name\":\"Aweso**\",\"token\":{\"token\":\"***\",\"exp\":1693929522}}}"
+    assertEquals(res2.stripTrailing.endsWith(endsWith2), true, res2)
 
   test("II. 6 sensitive type class"):
     val code =
@@ -122,4 +123,6 @@ class LoggableSpec extends munit.FunSuite:
 
     case class ThereIsNoSensitiveInfo(int: Int, str: String) derives Encoder.AsObject
     val data = ThereIsNoSensitiveInfo(42, "lol")
-    testOut(data.log("data"), "\"message\":\"data\",\"context\":{\"int\":42,\"str\":\"lol\"}}")
+    val res = data.log("data").noSpaces
+    val endsWith =  "\"message\":\"data\",\"context\":{\"int\":42,\"str\":\"lol\"}}"
+    assertEquals(res.stripTrailing.endsWith(endsWith), true, res)
