@@ -18,3 +18,4 @@
 - [s2-01](/modules/s2-01-scala3-overview)
 - [s2-02](/modules/s2-02-metaprogramming-1)
 - [s2-03](/modules/s2-03-metaprogramming-2)
+- [s2-04](/modules/s2-04-functors-monads)
