@@ -99,13 +99,25 @@ lazy val `s2-04-functors-monads` = (project in file(s"modules/$s204name"))
     )
   )
 
+val s205name = "s2-05-applicatives-traverse"
+lazy val `s2-05-applicatives-traverse` = (project in file(s"modules/$s205name"))
+  .settings(commonSettings)
+  .settings(
+    name := s205name,
+    libraryDependencies ++= Seq(
+      "org.typelevel" %% "cats-core" % "2.10.0",
+      munit            % Test
+    )
+  )
+
 lazy val allModules =
   Seq(
     `s2-01-scala3-overview`, // cross build projects
   ).flatMap(_.projectRefs) ++ Seq(
     `s2-02-metaprogramming-1`, // scala 3 only projects
     `s2-03-metaprogramming-2`,
-    `s2-04-functors-monads`
+    `s2-04-functors-monads`,
+    `s2-05-applicatives-traverse`
   ).map(projectToRef)
 
 lazy val `root` = (project in file("."))
@@ -120,7 +132,8 @@ lazy val moduleKeys: Map[String, String] = {
   List(
     s202name,
     s203name,
-    s204name
+    s204name,
+    s205name
   ).map(x => x.take(5) -> x).toMap + (
     "s2-01" -> (s201name + "3") // 3 is for scala3 module in sbt matrix, only for cross-build modules
   )
