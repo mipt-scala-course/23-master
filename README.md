@@ -19,3 +19,4 @@
 - [s2-02](/modules/s2-02-metaprogramming-1)
 - [s2-03](/modules/s2-03-metaprogramming-2)
 - [s2-04](/modules/s2-04-functors-monads)
+- [s2-05](/modules/s2-05-applicatives-traverse)
