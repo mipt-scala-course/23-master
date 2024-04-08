@@ -60,7 +60,7 @@ lazy val `s2-01-scala3-overview` = (projectMatrix in file(s"modules/$s201name"))
     name := s201name,
     libraryDependencies ++= Seq(
       circe.core,
-      munit % Test
+      munit
     )
   )
   .jvmPlatform(scala2And3Versions)
@@ -72,7 +72,7 @@ lazy val `s2-02-metaprogramming-1` = (project in file(s"modules/$s202name"))
     name := s202name,
     libraryDependencies ++= Seq(
       circe.core,
-      munit % Test
+      munit
     )
   )
 
@@ -84,7 +84,7 @@ lazy val `s2-03-metaprogramming-2` = (project in file(s"modules/$s203name"))
     libraryDependencies ++= Seq(
       circe.core,
       circe.parse,
-      munit % Test
+      munit
     )
   )
 
@@ -94,8 +94,8 @@ lazy val `s2-04-functors-monads` = (project in file(s"modules/$s204name"))
   .settings(
     name := s204name,
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-core" % "2.10.0",
-      "org.scalatest" %% "scalatest" % "3.2.18" % Test
+      cats.core,
+      scalaTest
     )
   )
 
@@ -105,8 +105,19 @@ lazy val `s2-05-applicatives-traverse` = (project in file(s"modules/$s205name"))
   .settings(
     name := s205name,
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-core" % "2.10.0",
-      munit            % Test
+      cats.core,
+      munit
+    )
+  )
+
+val s206name = "s2-06-cats-effect"
+lazy val `s2-06-cats-effect` = (project in file(s"modules/$s206name"))
+  .settings(commonSettings)
+  .settings(
+    name := s206name,
+    libraryDependencies ++= Seq(
+      cats.effect,
+      cats.effectScalatest
     )
   )
 
@@ -117,7 +128,8 @@ lazy val allModules =
     `s2-02-metaprogramming-1`, // scala 3 only projects
     `s2-03-metaprogramming-2`,
     `s2-04-functors-monads`,
-    `s2-05-applicatives-traverse`
+    `s2-05-applicatives-traverse`,
+    `s2-06-cats-effect`
   ).map(projectToRef)
 
 lazy val `root` = (project in file("."))
@@ -133,7 +145,8 @@ lazy val moduleKeys: Map[String, String] = {
     s202name,
     s203name,
     s204name,
-    s205name
+    s205name,
+    s206name
   ).map(x => x.take(5) -> x).toMap + (
     "s2-01" -> (s201name + "3") // 3 is for scala3 module in sbt matrix, only for cross-build modules
   )
