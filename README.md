@@ -21,3 +21,4 @@
 - [s2-04](/modules/s2-04-functors-monads)
 - [s2-05](/modules/s2-05-applicatives-traverse)
 - [s2-06](/modules/s2-06-cats-effect)
+- [s2-09](/modules/s2-09-testing)
