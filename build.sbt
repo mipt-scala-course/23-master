@@ -170,7 +170,8 @@ lazy val moduleKeys: Map[String, String] = {
     s203name,
     s204name,
     s205name,
-    s206name
+    s206name,
+    s209name
   ).map(x => x.take(5) -> x).toMap + (
     "s2-01" -> (s201name + "3") // 3 is for scala3 module in sbt matrix, only for cross-build modules
   )
