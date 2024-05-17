@@ -2,7 +2,7 @@ package hw
 
 class Tests extends munit.FunSuite:
   test("I. 2 reduction"):
-    val xx = (x =>: x(x))
+    val xx = x =>: x(x)
     assertEquals(
       reduce(id(xx)),
       xx
