@@ -22,3 +22,4 @@
 - [s2-05](/modules/s2-05-applicatives-traverse)
 - [s2-06](/modules/s2-06-cats-effect)
 - [s2-09](/modules/s2-09-testing)
+- [s2-11](/modules/s2-11-lambda-calculus)
